@@ -3,9 +3,13 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./index.css";
 
-const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
+const rootEl = document.getElementById("root");
 
-root.render(
+if (!rootEl) {
+  throw new Error("No se encontró el nodo #root");
+}
+
+ReactDOM.createRoot(rootEl).render(
   <React.StrictMode>
     <App />
   </React.StrictMode>,

@@ -18,13 +18,15 @@ export default function App() {
   }, [phase, tick]);
 
   return (
-    <div className="relative h-screen w-screen overflow-hidden bg-[#050816]">
+    <div className="relative h-screen w-screen overflow-hidden bg-[#050816] text-white">
       <Scene3D />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/35" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/35" />
+
       <TopBar />
       <LeftPanel />
       <RightPanel />
       <BottomBar />
+
       {phase === "menu" ? <MainMenu /> : null}
     </div>
   );
