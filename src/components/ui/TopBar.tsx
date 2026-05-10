@@ -1,37 +1,44 @@
-import React from 'react';
-import { Wind } from 'lucide-react';
-import { useGame } from '../../hooks/useGame';
-import { Metric, Panel } from './Panel';
+import React from "react";
+import { useGame } from "../../hooks/useGame";
 
 export default function TopBar() {
-  const state = useGame((s) => ({
-    debtPesos: s.debtPesos,
-    pesos: s.pesos,
-    usdPending: s.usdPending.reduce((sum, item) => sum + item.amountUsd, 0),
-    inflationRate: s.inflationRate,
-    moraleAverage: s.moraleAverage,
-    month: s.month,
-    year: s.year,
-    weather: s.weather,
-  }));
+  const pesos = useGame((s) => s.pesos);
+  const debtPesos = useGame((s) => s.debtPesos);
+  const usdPending = useGame((s) => s.usdPending);
+  const inflationRate = useGame((s) => s.inflationRate);
+  const moraleAverage = useGame((s) => s.moraleAverage);
+  const month = useGame((s) => s.month);
+  const year = useGame((s) => s.year);
 
   return (
-    <div className="absolute left-0 top-0 z-20 w-full p-3">
-      <Panel className="mx-auto max-w-[1400px]">
-        <div className="flex flex-wrap items-center gap-3">
-          <Metric label="Deuda" value={`-$${Math.abs(state.debtPesos).toLocaleString('es-AR')}`} tone="text-red-300" />
-          <Metric label="Pesos" value={`$${Math.round(state.pesos).toLocaleString('es-AR')}`} tone="text-emerald-200" />
-          <Metric label="USD pendientes" value={`$${state.usdPending.toFixed(0)} (3 meses)`} tone="text-sky-200" />
-          <Metric label="Inflación" value={`${(state.inflationRate * 100).toFixed(1)}%`} tone="text-amber-200" />
-          <Metric label="Moral promedio" value={`${Math.round(state.moraleAverage)}%`} tone="text-violet-200" />
-          <Metric label="Tiempo" value={`${state.month.toString().padStart(2, '0')}/${state.year}`} tone="text-white" />
-          <Metric label="Clima" value={state.weather === 'zonda' ? 'Viento Zonda' : state.weather === 'storm' ? 'Tormenta' : state.weather === 'drought' ? 'Sequía' : 'Normal'} tone="text-cyan-200" />
-          <div className="ml-auto flex items-center gap-2 text-white/70">
-            <Wind className="h-4 w-4" />
-            <span className="text-xs uppercase tracking-[0.35em]">La Rioja Agro-Tycoon</span>
-          </div>
-        </div>
-      </Panel>
+    <div className="absolute left-0 top-0 z-20 w-full px-4 pt-4">
+      <div className="grid gap-3 md:grid-cols-5">
+        <Card label="Deuda" value={`-$${Math.abs(Math.round(debtPesos)).toLocaleString("es-AR")}`} danger />
+        <Card label="Pesos" value={`$${Math.round(pesos).toLocaleString("es-AR")}`} />
+        <Card label="USD pendientes" value={`${usdPending.length} envíos`} />
+        <Card label="Inflación" value={`${Math.round(inflationRate * 100)}%`} />
+        <Card label="Moral" value={`${Math.round(moraleAverage)}%`} subtitle={`${month}/${year}`} />
+      </div>
+    </div>
+  );
+}
+
+function Card({
+  label,
+  value,
+  subtitle,
+  danger,
+}: {
+  label: string;
+  value: string;
+  subtitle?: string;
+  danger?: boolean;
+}) {
+  return (
+    <div className={`rounded-2xl border px-4 py-3 shadow-xl backdrop-blur-md ${danger ? "border-red-500/30 bg-red-950/70" : "border-white/10 bg-black/45"}`}>
+      <div className="text-[10px] uppercase tracking-[0.35em] text-white/55">{label}</div>
+      <div className="mt-1 text-xl font-black text-white">{value}</div>
+      {subtitle ? <div className="mt-1 text-xs text-white/60">{subtitle}</div> : null}
     </div>
   );
 }
